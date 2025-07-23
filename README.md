@@ -37,14 +37,18 @@ Construída com .NET 9 e Entity Framework Core, com banco de dados SQL Server Ex
    cd TaskManagerAPI
 
 2. Configure sua string de conexão no appsettings.json (para SQL Server Express LocalDB):
+
     "ConnectionStrings": {
+        
         "DefaultConnection": "Server=(localdb)\\\\mssqllocaldb;Database=TaskManagerDB;Trusted_Connection=True;"
 }
 
 3. Rode as migrações para criar o banco:
+
     dotnet ef database update
 
 4. Execute a API:
+
     dotnet run
 
 5. Acesse a API via http://localhost:5213 ou https://localhost:7028.
