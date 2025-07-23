@@ -33,23 +33,23 @@ Construída com .NET 9 e Entity Framework Core, com banco de dados SQL Server Ex
 ## Como rodar o projeto
 
 1. Clone o repositório:
-   git clone https://github.com/andrecapoano/check-listAPI.git
-   cd TaskManagerAPI
+
+        git clone https://github.com/andrecapoano/check-listAPI.git
+        cd check-listAPI
 
 2. Configure sua string de conexão no appsettings.json (para SQL Server Express LocalDB):
 
-    "ConnectionStrings": {
-        
-        "DefaultConnection": "Server=(localdb)\\\\mssqllocaldb;Database=TaskManagerDB;Trusted_Connection=True;"
+        "ConnectionStrings": {          
+            "DefaultConnection": "Server=(localdb)\\\\mssqllocaldb;Database=TaskManagerDB;Trusted_Connection=True;"
 }
 
 3. Rode as migrações para criar o banco:
 
-    dotnet ef database update
+        dotnet ef database update
 
 4. Execute a API:
 
-    dotnet run
+        dotnet run
 
 5. Acesse a API via http://localhost:5213 ou https://localhost:7028.
 
