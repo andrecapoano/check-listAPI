@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace TaskManagerAPI.Models;
 
 public class User
@@ -6,6 +8,7 @@ public class User
     public string Username { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
 
+    [JsonIgnore]
     public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
 }
    
