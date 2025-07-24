@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using TaskManagerAPI.Data;
 using TaskManagerAPI.Models;
+using TaskManagerAPI.Interfaces;
 
 namespace TaskManagerAPI.Controllers;
 
@@ -8,44 +8,44 @@ namespace TaskManagerAPI.Controllers;
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly IUserRepository _userRepository;
 
-    public UserController(AppDbContext context)
+    public UserController(IUserRepository userRepository)
     {
-        _context = context;
+        _userRepository = userRepository;
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<ActionResult<IEnumerable<User>>> GetAll()
     {
-        var users = _context.Users.ToList();
+        var users = await _userRepository.GetAllAsync();
         return Ok(users);
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetById(int id)
+    public async Task<ActionResult<User>> GetById(int id)
     {
-        var user = _context.Users.Find(id);
+        var user = await _userRepository.GetByIdAsync(id);
 
         if (user == null)
         {
             return NotFound();
         }
-        return Ok(user);
+
+        return Ok(user);        
     }
 
     [HttpPost]
-    public IActionResult Create(User user)
+    public async Task<IActionResult> Create(User user)
     {
-        _context.Users.Add(user);
-        _context.SaveChanges();
+        await _userRepository.CreateAsync(user);
         return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, User updateUser)
+    public async Task<IActionResult> Update(int id, User updateUser)
     {
-        var user = _context.Users.Find(id);
+        var user = await _userRepository.GetByIdAsync(id);
 
         if (user == null)
             return NotFound();
@@ -53,20 +53,19 @@ public class UserController : ControllerBase
         user.Username = updateUser.Username;
         user.Password = updateUser.Password;
 
-        _context.SaveChanges();
+        await _userRepository.UpdateAsync(user);
         return NoContent();
     }
     
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var user = _context.Users.Find(id);
+        var user = await _userRepository.GetByIdAsync(id);
 
         if (user == null)
             return NotFound();
-        
-        _context.Users.Remove(user);
-        _context.SaveChanges();
+
+        await _userRepository.DeleteAsync(id);
         return NoContent();
     }
 

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskManagerAPI.Data;
 using TaskManagerAPI.Models;
+using TaskManagerAPI.Interfaces;
 
 namespace TaskManagerAPI.Controllers;
 
@@ -9,28 +10,28 @@ namespace TaskManagerAPI.Controllers;
 [ApiController]
 public class TasksController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly ITasksRepository _tasksRepository;
 
-    public TasksController(AppDbContext context)
+    public TasksController(ITasksRepository tasksRepository)
     {
-        _context = context;
+        _tasksRepository = tasksRepository;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TaskItem>>> GetAll()
     {
-        return await _context.Tasks.Include(t => t.User).ToListAsync();
+        return Ok(await _tasksRepository.GetAllAsync());
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<TaskItem>> GetById(int id)
     {
-        var task = await _context.Tasks.Include(t => t.User).FirstOrDefaultAsync(t => t.Id == id);
+        var task = await _tasksRepository.GetByIdAsync(id);
 
         if (task == null)
             return NotFound();
 
-        return task;
+        return Ok(task);
     }
 
     [HttpPost]
@@ -38,43 +39,44 @@ public class TasksController : ControllerBase
     {
         task.CreatedAt = DateTime.UtcNow;
 
-        _context.Tasks.Add(task);
-        await _context.SaveChangesAsync();
+        await _tasksRepository.CreateAsync(task);
+        var createdTask = await _tasksRepository.GetByIdAsync(task.Id);
 
-        return CreatedAtAction(nameof(GetById), new { id = task.Id }, task);
+        if (createdTask == null)
+            return BadRequest();
+
+        return CreatedAtAction(nameof(GetById), new { id = createdTask.Id }, createdTask);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, TaskItem task)
     {
-    if (id != task.Id)
-        return BadRequest();
+        if (id != task.Id)
+            return BadRequest();
 
-    var existingTask = await _context.Tasks.FindAsync(id);
-    if (existingTask == null)
-        return NotFound();
+        var existingTask = await _tasksRepository.GetByIdAsync(id);
+        if (existingTask == null)
+            return NotFound();
 
-    existingTask.Title = task.Title;
-    existingTask.Description = task.Description;
-    existingTask.IsCompleted = task.IsCompleted;
-    existingTask.UserId = task.UserId;
+        existingTask.Title = task.Title;
+        existingTask.Description = task.Description;
+        existingTask.IsCompleted = task.IsCompleted;
+        existingTask.UserId = task.UserId;
 
-    await _context.SaveChangesAsync();
+        await _tasksRepository.UpdateAsync(existingTask);
 
-    return NoContent();
-}
+        return NoContent();
+    }
     
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var task = await _context.Tasks.FindAsync(id);
+        var task = await _tasksRepository.GetByIdAsync(id);
 
         if (task == null)
             return NotFound();
 
-        _context.Tasks.Remove(task);
-        await _context.SaveChangesAsync();
-
+        await _tasksRepository.DeleteAsync(id);
         return NoContent();
     }
 }

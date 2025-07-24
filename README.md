@@ -55,7 +55,10 @@ Construída com .NET 9 e Entity Framework Core, com banco de dados SQL Server Ex
 
 ## Próximos passos
 
-* Editar o código nos moldes de um repository pattern;
-* Implementar autenticação JWT;
-* Melhorar validação e tratamento de erros;
-* Criar frontend para consumir a API.
+### Concluídos
+- ✅ Editar o código nos moldes de Repository Pattern.
+
+### Em andamento
+- ⏳ Implementar autenticação JWT;
+- ⏳ Melhorar validação e tratamento de erros;
+- ⏳ Criar frontend para consumir a API.
