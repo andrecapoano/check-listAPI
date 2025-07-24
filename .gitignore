@@ -1,5 +1,11 @@
 bin/
 obj/
 *.user
+*.vspscc
+*.vssscc
+appsettings.Development.json
+secrets.json
 .vscode/
+.vs/
+*.log
 .env
