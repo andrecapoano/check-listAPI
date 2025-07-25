@@ -14,10 +14,11 @@ Construída com .NET 9 e Entity Framework Core, com banco de dados SQL Server Ex
 
 ## Funcionalidades atuais
 
-- Cadastro de usuários (UserController)
-- CRUD completo de tarefas (TaskController)
-- Relacionamento entre usuários e tarefas
-- Controle básico de dados via Entity Framework Core
+- Cadastro, alteração e exclusão de usuários;
+- Login para usuários cadastrados;
+- CRUD completo de tarefas;
+- Relacionamento entre usuários e tarefas;
+- Controle básico de dados via Entity Framework Core.
 
 ---
 
@@ -51,14 +52,24 @@ Construída com .NET 9 e Entity Framework Core, com banco de dados SQL Server Ex
 
         dotnet run
 
-5. Acesse a API via http://localhost:5213 ou https://localhost:7028.
+5. Acesse a API via https://localhost:7028.
+
+---
+
+## Endpoints
+
+- Em construção...
+
+---
 
 ## Próximos passos
 
 ### Concluídos
 - ✅ Editar o código nos moldes de Repository Pattern.
+- ✅ Adicionar endpoint de login.
 
 ### Em andamento
 - ⏳ Implementar autenticação JWT;
+- ⏳ Implementar o Guid para geração de ID de usuários;
 - ⏳ Melhorar validação e tratamento de erros;
 - ⏳ Criar frontend para consumir a API.
