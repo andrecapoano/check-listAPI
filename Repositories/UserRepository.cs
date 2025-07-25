@@ -45,4 +45,14 @@ public class UserRepository : IUserRepository
             await _context.SaveChangesAsync();
         }
     }
+
+   public async Task<User?> AuthenticateAsync(string username, string password)
+{
+    var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+
+    if (user == null || user.Password != password)
+        return null;
+
+    return user;
+}
 }

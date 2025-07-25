@@ -8,4 +8,5 @@ public interface IUserRepository
     Task CreateAsync(User user);
     Task UpdateAsync(User user);
     Task DeleteAsync(int id);
+    Task<User?> AuthenticateAsync(string username, string password);
 }
