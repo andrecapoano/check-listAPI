@@ -46,13 +46,19 @@ public class UserRepository : IUserRepository
         }
     }
 
-   public async Task<User?> AuthenticateAsync(string username, string password)
-{
-    var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+    public async Task<User?> AuthenticateAsync(string username, string password)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
 
-    if (user == null || user.Password != password)
-        return null;
+        if (user == null || user.Password != password)
+            return null;
 
-    return user;
-}
+        return user;
+    }
+    
+    public async Task<User?> GetByUsernameAsync(string username)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+    }
+
 }

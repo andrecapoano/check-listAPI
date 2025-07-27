@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TaskManagerAPI.Data;
 using TaskManagerAPI.Models;
 using TaskManagerAPI.Interfaces;
 
@@ -20,43 +18,73 @@ public class TasksController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TaskItem>>> GetAll()
     {
-        return Ok(await _tasksRepository.GetAllAsync());
+        try
+        {
+            var tasks = await _tasksRepository.GetAllAsync();
+            return Ok(tasks);
+        }
+
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, "Ocorreu um erro ao buscar as tarefas.");
+        }
     }
+
 
     [HttpGet("{id}")]
     public async Task<ActionResult<TaskItem>> GetById(int id)
     {
-        var task = await _tasksRepository.GetByIdAsync(id);
+        try
+        {
+            var task = await _tasksRepository.GetByIdAsync(id);
 
-        if (task == null)
-            return NotFound();
+            if (task == null)
+                return NotFound("Tarefa não encontrada.");
 
-        return Ok(task);
+            return Ok(task);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, "Ocorreu um erro ao buscar a tarefa.");
+        }
     }
 
     [HttpPost]
     public async Task<ActionResult<TaskItem>> Create(TaskItem task)
     {
-        task.CreatedAt = DateTime.UtcNow;
 
-        await _tasksRepository.CreateAsync(task);
-        var createdTask = await _tasksRepository.GetByIdAsync(task.Id);
+        try
+        {
+            task.CreatedAt = DateTime.UtcNow;
 
-        if (createdTask == null)
-            return BadRequest();
+            await _tasksRepository.CreateAsync(task);
+            var createdTask = await _tasksRepository.GetByIdAsync(task.Id);
 
-        return CreatedAtAction(nameof(GetById), new { id = createdTask.Id }, createdTask);
+            if (createdTask == null)
+                return BadRequest();
+
+            return CreatedAtAction(nameof(GetById), new { id = createdTask.Id }, createdTask);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, "Ocorreu um erro ao criar a tarefa.");
+        }
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, TaskItem task)
+   [HttpPut("{id}")]
+public async Task<IActionResult> Update(int id, TaskItem task)
+{
+    try
     {
         if (id != task.Id)
-            return BadRequest();
+            return BadRequest("O ID da URL não corresponde ao ID da tarefa.");
 
         var existingTask = await _tasksRepository.GetByIdAsync(id);
         if (existingTask == null)
-            return NotFound();
+            return NotFound("Tarefa não encontrada.");
 
         existingTask.Title = task.Title;
         existingTask.Description = task.Description;
@@ -67,16 +95,30 @@ public class TasksController : ControllerBase
 
         return NoContent();
     }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+        return StatusCode(500, "Ocorreu um erro interno ao atualizar a tarefa.");
+    }
+}
     
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var task = await _tasksRepository.GetByIdAsync(id);
+        try
+        {
+            var task = await _tasksRepository.GetByIdAsync(id);
 
-        if (task == null)
-            return NotFound();
+            if (task == null)
+                return NotFound("Tarefa não encontrada.");
 
-        await _tasksRepository.DeleteAsync(id);
-        return NoContent();
+            await _tasksRepository.DeleteAsync(id);
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, "Ocorreu um erro ao deletar a tarefa.");
+        }
     }
 }

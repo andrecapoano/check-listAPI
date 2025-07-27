@@ -72,4 +72,4 @@ Construída com .NET 9 e Entity Framework Core, com banco de dados SQL Server Ex
 - ⏳ Implementar autenticação JWT;
 - ⏳ Implementar o Guid para geração de ID de usuários;
 - ⏳ Melhorar validação e tratamento de erros;
-- ⏳ Criar frontend para consumir a API.
+- ⏳ Criar frontend para consumir a API (Iniciado parcialmente...).

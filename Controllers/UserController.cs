@@ -19,47 +19,85 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetAll()
     {
-        var users = await _userRepository.GetAllAsync();
-        return Ok(users);
+        try
+        {
+            var users = await _userRepository.GetAllAsync();
+            return Ok(users); // Retorna os usuários cadastrados incluindo a senha para facilitar o teste
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, "Ocorreu um erro ao buscar os usuários.");
+        }
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetById(int id)
     {
-        var user = await _userRepository.GetByIdAsync(id);
-
-        if (user == null)
+        try
         {
-            return NotFound();
-        }
+            var user = await _userRepository.GetByIdAsync(id);
 
-        return Ok(user);
+            if (user == null)
+            {
+                return NotFound("Usuário não encontrado.");
+            }
+
+            var userResponse = new
+            {
+                Id = user.Id,
+                Username = user.Username,
+            };
+            
+            return Ok(userResponse);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, "Ocorreu um erro ao buscar o usuário.");
+        }
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(User user)
     {
-        if (string.IsNullOrWhiteSpace(user.Username) || string.IsNullOrWhiteSpace(user.Password))
-            return BadRequest("Usuário e senha são obrigatórios.");
-
-        var existeUsuario = await _userRepository.AuthenticateAsync(user.Username, user.Password);
-
-        if (existeUsuario != null)
+        try
         {
-            return Conflict("Já existe um usuário com esse nome.");
-        }
+            if (string.IsNullOrWhiteSpace(user.Username) || string.IsNullOrWhiteSpace(user.Password))
+                return BadRequest("Usuário e senha são obrigatórios.");
 
-        await _userRepository.CreateAsync(user);
-        return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+            var existeUsuario = await _userRepository.AuthenticateAsync(user.Username, user.Password);
+
+            if (existeUsuario != null)
+            {
+                return Conflict("Já existe um usuário com esse nome.");
+            }
+
+            await _userRepository.CreateAsync(user);
+            return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, "Ocorreu um erro ao criar o usuário.");
+        }
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, User updateUser)
+public async Task<IActionResult> Update(int id, User updateUser)
+{
+    try
     {
         var user = await _userRepository.GetByIdAsync(id);
-
         if (user == null)
-            return NotFound();
+            return NotFound("Usuário não encontrado.");
+        
+        var userComMesmoNome = await _userRepository.GetByUsernameAsync(updateUser.Username);
+        
+        if (userComMesmoNome != null && userComMesmoNome.Id != id)
+            {
+                return Conflict("Já existe outro usuário com esse nome.");
+            }
 
         user.Username = updateUser.Username;
         user.Password = updateUser.Password;
@@ -67,35 +105,64 @@ public class UserController : ControllerBase
         await _userRepository.UpdateAsync(user);
         return NoContent();
     }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+        return StatusCode(500, "Ocorreu um erro ao atualizar o usuário.");
+    }
+}
+
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var user = await _userRepository.GetByIdAsync(id);
+        try
+        {
+            var user = await _userRepository.GetByIdAsync(id);
 
-        if (user == null)
-            return NotFound();
+            if (user == null)
+                return NotFound("Usuário não encontrado.");
 
-        await _userRepository.DeleteAsync(id);
-        return NoContent();
+            await _userRepository.DeleteAsync(id);
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, "Ocorreu um erro ao deletar o usuário.");
+        }
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
     {
-        if (loginRequest == null || string.IsNullOrEmpty(loginRequest.Username) || string.IsNullOrEmpty(loginRequest.Password))
+        try
         {
-            return BadRequest("Usuário e senha são obrigatórios.");
+            if (loginRequest == null || string.IsNullOrEmpty(loginRequest.Username) || string.IsNullOrEmpty(loginRequest.Password))
+            {
+                return BadRequest("Usuário e senha são obrigatórios.");
+            }
+
+            var user = await _userRepository.AuthenticateAsync(loginRequest.Username, loginRequest.Password);
+
+            if (user == null)
+            {
+                return Unauthorized("Usuário ou senha inválidos.");
+            }
+
+            var userResponse = new
+            {
+                Id = user.Id,
+                Username = user.Username,
+            };
+
+            return Ok(userResponse);
         }
-
-        var user = await _userRepository.AuthenticateAsync(loginRequest.Username, loginRequest.Password);
-
-        if (user == null)
+        catch (Exception e)
         {
-            return Unauthorized("Usuário ou senha inválidos.");
+            Console.WriteLine(e.Message);
+            return StatusCode(500, "Ocorreu um erro ao realizar o login.");
         }
-
-        return Ok(user);
     }
 }
 
