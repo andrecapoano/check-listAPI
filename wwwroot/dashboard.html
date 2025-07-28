@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    #taskFormContainer {
+      display: none;
+      margin-bottom: 20px;
+    }
+
+    #btnNewTask {
+      display: block;
+      margin: 0 auto 15px auto;
+      padding: 10px 15px;
+      background-color: #0078d7;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      max-width: 150px;
+      text-align: center;
+    }
+
+    #btnNewTask:hover {
+      background-color: #005a9e;
+    }
+  </style>
+</head>
+<body>  
+
+  <div class="login-container">
+    <div id="welcome-message" style="text-align: center; margin-top: 1px; font-size: 1rem; font-weight: bold;"></div>
+    <h2>Suas tarefas</h2>
+
+    <button id="btnNewTask">+ Nova Tarefa</button>
+
+    <div id="taskFormContainer">
+      <input type="text" id="taskTitle" placeholder="Título da tarefa..." />
+      <input type="text" id="taskDescription" placeholder="Descrição da tarefa..." />
+      <button onclick="addTask()">Adicionar</button>
+    </div>
+
+    <ul id="taskList"></ul>
+
+    <div id="message"></div>
+    <button onclick="logout()">Sair</button>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
