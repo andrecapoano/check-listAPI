@@ -71,9 +71,9 @@ Para acessar os todos os Endpoints, rode o projeto e acesse: https://localhost:7
 - ✅ Editar o código nos moldes de Repository Pattern;
 - ✅ Adicionar endpoint de login;
 - ✅ Implementar autenticação JWT;
-- ✅ Criar frontend para consumir a API.
+- ✅ Criar frontend para consumir a API;
+- ✅ Filtrar tasks por id de usuário.
 
 ### Em andamento
-- ⏳ Filtrar tasks por id de usuário;
 - ⏳ Implementar o Guid para geração de ID de usuários;
 - ⏳ Melhorar validação e tratamento de erros.
