@@ -7,7 +7,7 @@ API RESTful para gerenciamento de tarefas com cadastro e autenticação de usuá
 ## Sobre
 
 Projeto de API backend com frontend simples para gerenciamento de tarefas, utilizando autenticação JWT.
-Frontend em HTML, CSS e JavaScript puro, e backend em ASP.NET Core com Entity Framework Core.
+Frontend em HTML, CSS e JavaScript puro, e backend em C# e ASP.NET Core com Entity Framework Core.
 Permite cadastro e login de usuários, com acesso exclusivo às tarefas vinculadas ao usuário autenticado.
 
 ---
