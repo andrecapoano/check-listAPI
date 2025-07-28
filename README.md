@@ -6,19 +6,22 @@ API RESTful para gerenciamento de tarefas com cadastro e autenticação de usuá
 
 ## Sobre
 
-Este projeto é uma API backend que permite criar, editar, listar e deletar tarefas associadas a usuários. Ideal para um sistema de checklist ou to-do list. 
-
-Construída com .NET 9 e Entity Framework Core, com banco de dados SQL Server Express local.
+Projeto de API backend com frontend simples para gerenciamento de tarefas, utilizando autenticação JWT.
+Frontend em HTML, CSS e JavaScript puro, e backend em ASP.NET Core com Entity Framework Core.
+Permite cadastro e login de usuários, com acesso exclusivo às tarefas vinculadas ao usuário autenticado.
 
 ---
 
 ## Funcionalidades atuais
 
-- Cadastro, alteração e exclusão de usuários;
-- Login para usuários cadastrados (frontend incluso);
-- CRUD completo de tarefas;
-- Relacionamento entre usuários e tarefas;
-- Controle básico de dados via Entity Framework Core.
+- Autenticação com JWT para proteger rotas e garantir acesso individualizado aos dados;
+- Cadastro e login de usuários com validações e mensagens dinâmicas no frontend;
+- Painel web completo para gerenciar tarefas (HTML, CSS e JS puro);
+- CRUD completo de tarefas com atualização em tempo real após cada operação;
+- Relacionamento entre usuários e suas tarefas, com controle de acesso por token;
+- Endpoints para edição e exclusão de usuários (ainda não expostos no frontend);
+- Persistência de dados com Entity Framework Core e SQL Server Express;
+- Armazenamento seguro do token JWT no localStorage após login.
 
 ---
 
@@ -58,18 +61,19 @@ Construída com .NET 9 e Entity Framework Core, com banco de dados SQL Server Ex
 
 ## Endpoints
 
-Para acessar os Endpoints, rode o projeto e acesse: https://localhost:7028/swagger
+Para acessar os todos os Endpoints, rode o projeto e acesse: https://localhost:7028/swagger
 
 ---
 
 ## Próximos passos
 
 ### Concluídos
-- ✅ Editar o código nos moldes de Repository Pattern.
-- ✅ Adicionar endpoint de login.
+- ✅ Editar o código nos moldes de Repository Pattern;
+- ✅ Adicionar endpoint de login;
 - ✅ Implementar autenticação JWT;
+- ✅ Criar frontend para consumir a API.
 
 ### Em andamento
+- ⏳ Filtrar tasks por id de usuário;
 - ⏳ Implementar o Guid para geração de ID de usuários;
-- ⏳ Melhorar validação e tratamento de erros;
-- ⏳ Criar frontend para consumir a API (Iniciado parcialmente...).
+- ⏳ Melhorar validação e tratamento de erros.
