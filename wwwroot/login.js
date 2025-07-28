@@ -9,7 +9,6 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
   try {
     const response = await fetch('https://localhost:7028/api/user/login', {
-
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -18,10 +17,25 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     });
 
     if (response.ok) {
-      const user = await response.json();
-      messageDiv.style.color = 'green';
-      messageDiv.textContent = `Bem-vindo, ${user.nome || user.username}!`;
+      const data = await response.json();
+  
+      if (!data.token) {
+        messageDiv.style.color = 'red';
+        messageDiv.textContent = 'Token não recebido. Login falhou.';
+        return;
+      }
       
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.user.id);
+      localStorage.setItem('username', data.user.username);
+
+      messageDiv.style.color = 'green';
+      messageDiv.textContent = `Bem-vindo, ${data.user.username}!`;
+
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      });
+
     } else if (response.status === 400 || response.status === 401) {
       const errorText = await response.text();
       messageDiv.style.color = 'red';

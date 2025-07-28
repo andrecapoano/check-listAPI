@@ -16,7 +16,7 @@ public class TasksController : ControllerBase
         _tasksRepository = tasksRepository;
     }
 
-    [Authorize]
+    [AllowAnonymous] // Permitindo acesso sem autenticação apenas para testes
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TaskItem>>> GetAll()
     {
