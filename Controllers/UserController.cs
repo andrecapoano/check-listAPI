@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using TaskManagerAPI.Models;
 using TaskManagerAPI.Interfaces;
 using TaskManagerAPI.DTOs;
+using TaskManagerAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TaskManagerAPI.Controllers;
 
@@ -10,12 +12,15 @@ namespace TaskManagerAPI.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
+    private readonly JwtTokenGenerator _jwtTokenGenerator;
 
-    public UserController(IUserRepository userRepository)
+    public UserController(IUserRepository userRepository, JwtTokenGenerator jwtTokenGenerator)
     {
         _userRepository = userRepository;
+        _jwtTokenGenerator = jwtTokenGenerator;
     }
 
+    [AllowAnonymous] // Permitindo acesso sem autenticação apenas para testes
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetAll()
     {
@@ -31,6 +36,7 @@ public class UserController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<User>> GetById(int id)
     {
@@ -58,6 +64,7 @@ public class UserController : ControllerBase
         }
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Create(User user)
     {
@@ -83,36 +90,37 @@ public class UserController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPut("{id}")]
-public async Task<IActionResult> Update(int id, User updateUser)
-{
-    try
+    public async Task<IActionResult> Update(int id, User updateUser)
     {
-        var user = await _userRepository.GetByIdAsync(id);
-        if (user == null)
-            return NotFound("Usuário não encontrado.");
-        
-        var userComMesmoNome = await _userRepository.GetByUsernameAsync(updateUser.Username);
-        
-        if (userComMesmoNome != null && userComMesmoNome.Id != id)
-            {
-                return Conflict("Já existe outro usuário com esse nome.");
-            }
+        try
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+                return NotFound("Usuário não encontrado.");
+            
+            var userComMesmoNome = await _userRepository.GetByUsernameAsync(updateUser.Username);
+            
+            if (userComMesmoNome != null && userComMesmoNome.Id != id)
+                {
+                    return Conflict("Já existe outro usuário com esse nome.");
+                }
 
-        user.Username = updateUser.Username;
-        user.Password = updateUser.Password;
+            user.Username = updateUser.Username;
+            user.Password = updateUser.Password;
 
-        await _userRepository.UpdateAsync(user);
-        return NoContent();
+            await _userRepository.UpdateAsync(user);
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+            return StatusCode(500, "Ocorreu um erro ao atualizar o usuário.");
+        }
     }
-    catch (Exception e)
-    {
-        Console.WriteLine(e.Message);
-        return StatusCode(500, "Ocorreu um erro ao atualizar o usuário.");
-    }
-}
 
-
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -133,6 +141,7 @@ public async Task<IActionResult> Update(int id, User updateUser)
         }
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
     {
@@ -150,13 +159,13 @@ public async Task<IActionResult> Update(int id, User updateUser)
                 return Unauthorized("Usuário ou senha inválidos.");
             }
 
-            var userResponse = new
-            {
-                Id = user.Id,
-                Username = user.Username,
-            };
+            var token = _jwtTokenGenerator.GenerateToken(user);
 
-            return Ok(userResponse);
+            return Ok(new
+            {
+                token,
+                user = new { user.Id, user.Username }
+            });
         }
         catch (Exception e)
         {
@@ -165,6 +174,3 @@ public async Task<IActionResult> Update(int id, User updateUser)
         }
     }
 }
-
-
-

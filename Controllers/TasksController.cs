@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManagerAPI.Models;
 using TaskManagerAPI.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TaskManagerAPI.Controllers;
 
@@ -15,6 +16,7 @@ public class TasksController : ControllerBase
         _tasksRepository = tasksRepository;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TaskItem>>> GetAll()
     {
@@ -31,7 +33,7 @@ public class TasksController : ControllerBase
         }
     }
 
-
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<TaskItem>> GetById(int id)
     {
@@ -51,6 +53,7 @@ public class TasksController : ControllerBase
         }
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<TaskItem>> Create(TaskItem task)
     {
@@ -74,7 +77,8 @@ public class TasksController : ControllerBase
         }
     }
 
-   [HttpPut("{id}")]
+    [Authorize]
+    [HttpPut("{id}")]
 public async Task<IActionResult> Update(int id, TaskItem task)
 {
     try
@@ -102,6 +106,7 @@ public async Task<IActionResult> Update(int id, TaskItem task)
     }
 }
     
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
