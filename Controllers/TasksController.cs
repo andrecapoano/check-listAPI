@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TaskManagerAPI.Models;
 using TaskManagerAPI.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace TaskManagerAPI.Controllers;
 
@@ -16,16 +17,20 @@ public class TasksController : ControllerBase
         _tasksRepository = tasksRepository;
     }
 
-    [AllowAnonymous] // Permitindo acesso sem autenticação apenas para testes
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TaskItem>>> GetAll()
     {
         try
         {
-            var tasks = await _tasksRepository.GetAllAsync();
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!int.TryParse(userIdString, out var userId))
+                return Unauthorized("Usuário não identificado.");
+
+            var tasks = await _tasksRepository.GetByUserIdAsync(userId);
             return Ok(tasks);
         }
-
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
@@ -60,7 +65,7 @@ public class TasksController : ControllerBase
 
         try
         {
-            task.CreatedAt = DateTime.UtcNow;
+            task.CreatedAt = DateTime.Now;
 
             await _tasksRepository.CreateAsync(task);
             var createdTask = await _tasksRepository.GetByIdAsync(task.Id);
@@ -79,32 +84,32 @@ public class TasksController : ControllerBase
 
     [Authorize]
     [HttpPut("{id}")]
-public async Task<IActionResult> Update(int id, TaskItem task)
-{
-    try
+    public async Task<IActionResult> Update(int id, TaskItem task)
     {
-        if (id != task.Id)
-            return BadRequest("O ID da URL não corresponde ao ID da tarefa.");
+        try
+        {
+            if (id != task.Id)
+                return BadRequest("O ID da URL não corresponde ao ID da tarefa.");
 
-        var existingTask = await _tasksRepository.GetByIdAsync(id);
-        if (existingTask == null)
-            return NotFound("Tarefa não encontrada.");
+            var existingTask = await _tasksRepository.GetByIdAsync(id);
+            if (existingTask == null)
+                return NotFound("Tarefa não encontrada.");
 
-        existingTask.Title = task.Title;
-        existingTask.Description = task.Description;
-        existingTask.IsCompleted = task.IsCompleted;
-        existingTask.UserId = task.UserId;
+            existingTask.Title = task.Title;
+            existingTask.Description = task.Description;
+            existingTask.IsCompleted = task.IsCompleted;
+            existingTask.UserId = task.UserId;
 
-        await _tasksRepository.UpdateAsync(existingTask);
+            await _tasksRepository.UpdateAsync(existingTask);
 
-        return NoContent();
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return StatusCode(500, "Ocorreu um erro interno ao atualizar a tarefa.");
+        }
     }
-    catch (Exception ex)
-    {
-        Console.WriteLine(ex.Message);
-        return StatusCode(500, "Ocorreu um erro interno ao atualizar a tarefa.");
-    }
-}
     
     [Authorize]
     [HttpDelete("{id}")]
