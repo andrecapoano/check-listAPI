@@ -45,4 +45,11 @@ public class TasksRepository : ITasksRepository
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<IEnumerable<TaskItem>> GetByUserIdAsync(int userId)
+    {
+        return await _context.Tasks
+                            .Where(t => t.UserId == userId)
+                            .ToListAsync();
+    }
 }
