@@ -15,7 +15,7 @@ Construída com .NET 9 e Entity Framework Core, com banco de dados SQL Server Ex
 ## Funcionalidades atuais
 
 - Cadastro, alteração e exclusão de usuários;
-- Login para usuários cadastrados;
+- Login para usuários cadastrados (frontend incluso);
 - CRUD completo de tarefas;
 - Relacionamento entre usuários e tarefas;
 - Controle básico de dados via Entity Framework Core.
@@ -58,7 +58,7 @@ Construída com .NET 9 e Entity Framework Core, com banco de dados SQL Server Ex
 
 ## Endpoints
 
-- Em construção...
+Para acessar os Endpoints, rode o projeto e acesse: https://localhost:7028/swagger
 
 ---
 
@@ -67,9 +67,9 @@ Construída com .NET 9 e Entity Framework Core, com banco de dados SQL Server Ex
 ### Concluídos
 - ✅ Editar o código nos moldes de Repository Pattern.
 - ✅ Adicionar endpoint de login.
+- ✅ Implementar autenticação JWT;
 
 ### Em andamento
-- ⏳ Implementar autenticação JWT;
 - ⏳ Implementar o Guid para geração de ID de usuários;
 - ⏳ Melhorar validação e tratamento de erros;
 - ⏳ Criar frontend para consumir a API (Iniciado parcialmente...).
