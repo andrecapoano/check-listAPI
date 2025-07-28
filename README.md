@@ -19,7 +19,7 @@ Permite cadastro e login de usuários, com acesso exclusivo às tarefas vinculad
 - Painel web completo para gerenciar tarefas (HTML, CSS e JS puro);
 - CRUD completo de tarefas com atualização em tempo real após cada operação;
 - Relacionamento entre usuários e suas tarefas, com controle de acesso por token;
-- Endpoints para edição e exclusão de usuários (não expostos no frontend);
+- Endpoints para edição e exclusão de usuários (ainda não expostos no frontend);
 - Persistência de dados com Entity Framework Core e SQL Server Express;
 - Armazenamento seguro do token JWT no localStorage após login.
 
