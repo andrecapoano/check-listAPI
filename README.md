@@ -21,7 +21,7 @@ Permite cadastro e login de usuários, com acesso exclusivo às tarefas vinculad
 - Relacionamento entre usuários e suas tarefas, com controle de acesso por token;
 - Endpoints para edição e exclusão de usuários (ainda não expostos no frontend);
 - Persistência de dados com Entity Framework Core e SQL Server Express;
-- Armazenamento seguro do token JWT no localStorage após login.
+- Armazenamento do token JWT no localStorage após login.
 
 ---
 
