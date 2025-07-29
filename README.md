@@ -72,8 +72,9 @@ Para acessar os todos os Endpoints, rode o projeto e acesse: https://localhost:7
 - ✅ Adicionar endpoint de login;
 - ✅ Implementar autenticação JWT;
 - ✅ Criar frontend para consumir a API;
-- ✅ Filtrar tasks por id de usuário.
+- ✅ Filtrar tarefas por id de usuário;
+- ✅ Implementar o Guid para geração de ID de usuários e tarefas.
 
 ### Em andamento
-- ⏳ Implementar o Guid para geração de ID de usuários;
+
 - ⏳ Melhorar validação e tratamento de erros.
