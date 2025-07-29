@@ -22,7 +22,6 @@ window.onload = () => {
   loadTasks();
 };
 
-
 btnNewTask.onclick = () => {
   taskFormContainer.style.display = taskFormContainer.style.display === 'none' ? 'flex' : 'none';
 };
@@ -60,7 +59,7 @@ async function loadTasks() {
           <span class="task-date">${formattedDate}</span>
           <div class="task-actions">
             <button onclick="enableEditing(this)">Editar</button>
-            <button onclick="deleteTask(${task.id})">Excluir</button>
+            <button onclick="deleteTask('${task.id}')">Excluir</button>
           </div>
         </div>
 
@@ -71,12 +70,12 @@ async function loadTasks() {
           <input type="text" class="edit-title" value="${task.title}" disabled />
           <input type="text" class="edit-description" value="${task.description || ''}" disabled />
 
-          <div class="edit-actions">
-            <button onclick="saveTask(${task.id}, this)">Salvar</button>
+          <div class="edit-actions" style="display:none;">
+            <button onclick="saveTask('${task.id}', this)">Salvar</button>
             <button onclick="cancelEdit(this)">Cancelar</button>
           </div>
 
-          <button class="toggle-btn" onclick="toggleStatus(${task.id}, ${task.isCompleted})">
+          <button class="toggle-btn" onclick="toggleStatus('${task.id}', ${task.isCompleted})">
             ${task.isCompleted ? 'Tarefa concluída.' : 'Concluir tarefa.'}
           </button>
         </div>
@@ -104,10 +103,11 @@ async function addTask() {
   const body = {
     title,
     description,
-    userId: Number(userId)
+    userId
   };
+  
 
-  try {
+  try { 
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -169,7 +169,7 @@ async function saveTask(id, button) {
     title,
     description,
     isCompleted: taskContent.closest('li').classList.contains('completed'),
-    userId: Number(userId)
+    userId
   };
 
   try {
@@ -207,7 +207,7 @@ async function deleteTask(id) {
 
 async function toggleStatus(id, isCompleted) {
   try {
-    const li = [...taskList.children].find(li => li.innerHTML.includes(`toggleStatus(${id},`));
+    const li = [...taskList.children].find(li => li.innerHTML.includes(`toggleStatus('${id}',`));
     const title = li.querySelector('.edit-title').value;
     const description = li.querySelector('.edit-description').value;
 
@@ -216,7 +216,7 @@ async function toggleStatus(id, isCompleted) {
       title,
       description,
       isCompleted: !isCompleted,
-      userId: Number(userId)
+      userId
     };
 
     const response = await fetch(`${apiUrl}/${id}`, {

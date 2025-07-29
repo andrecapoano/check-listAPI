@@ -19,7 +19,7 @@ public class TasksRepository : ITasksRepository
         return await _context.Tasks.ToListAsync();
     }
 
-    public async Task<TaskItem?> GetByIdAsync(int id)
+    public async Task<TaskItem?> GetByIdAsync(Guid id)
     {
         return await _context.Tasks.Include(t => t.User).FirstOrDefaultAsync(t => t.Id == id);
     }
@@ -36,7 +36,7 @@ public class TasksRepository : ITasksRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
         var task = await GetByIdAsync(id);
         if (task != null)
@@ -46,7 +46,7 @@ public class TasksRepository : ITasksRepository
         }
     }
 
-    public async Task<IEnumerable<TaskItem>> GetByUserIdAsync(int userId)
+    public async Task<IEnumerable<TaskItem>> GetByUserIdAsync(Guid userId)
     {
         return await _context.Tasks
                             .Where(t => t.UserId == userId)

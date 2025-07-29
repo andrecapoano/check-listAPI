@@ -7,8 +7,8 @@ body {
 
 .login-container {
   max-width: 320px;
-  margin: 100px auto;
-  padding: 20px;
+  margin: 40px auto;
+  padding: 15px;
   background-color: #ffffff;
   border-radius: 6px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);

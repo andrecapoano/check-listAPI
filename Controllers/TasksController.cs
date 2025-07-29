@@ -25,7 +25,7 @@ public class TasksController : ControllerBase
         {
             var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (!int.TryParse(userIdString, out var userId))
+            if (!Guid.TryParse(userIdString, out var userId))
                 return Unauthorized("Usuário não identificado.");
 
             var tasks = await _tasksRepository.GetByUserIdAsync(userId);
@@ -40,7 +40,7 @@ public class TasksController : ControllerBase
 
     [Authorize]
     [HttpGet("{id}")]
-    public async Task<ActionResult<TaskItem>> GetById(int id)
+    public async Task<ActionResult<TaskItem>> GetById(Guid id)
     {
         try
         {
@@ -84,7 +84,7 @@ public class TasksController : ControllerBase
 
     [Authorize]
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, TaskItem task)
+    public async Task<IActionResult> Update(Guid id, TaskItem task)
     {
         try
         {
@@ -113,7 +113,7 @@ public class TasksController : ControllerBase
     
     [Authorize]
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         try
         {
