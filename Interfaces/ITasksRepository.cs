@@ -4,9 +4,9 @@ using TaskManagerAPI.Models;
 public interface ITasksRepository
 {
     Task<IEnumerable<TaskItem>> GetAllAsync();
-    Task<TaskItem?> GetByIdAsync(int id);
+    Task<TaskItem?> GetByIdAsync(Guid id);
     Task CreateAsync(TaskItem task);
     Task UpdateAsync(TaskItem task);
-    Task DeleteAsync(int id);
-    Task<IEnumerable<TaskItem>> GetByUserIdAsync(int userId);
+    Task DeleteAsync(Guid id);
+    Task<IEnumerable<TaskItem>> GetByUserIdAsync(Guid userId);
 }

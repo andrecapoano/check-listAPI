@@ -4,7 +4,7 @@ namespace TaskManagerAPI.Models;
 
 public class User
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
     public string Username { get; set; } = string.Empty;
     // [JsonIgnore]
     public string Password { get; set; } = string.Empty;

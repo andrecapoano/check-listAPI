@@ -38,7 +38,7 @@ public class UserController : ControllerBase
 
     [Authorize]
     [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetById(int id)
+    public async Task<ActionResult<User>> GetById(Guid id)
     {
         try
         {
@@ -92,7 +92,7 @@ public class UserController : ControllerBase
 
     [Authorize]
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, User updateUser)
+    public async Task<IActionResult> Update(Guid id, User updateUser)
     {
         try
         {
@@ -122,7 +122,7 @@ public class UserController : ControllerBase
 
     [Authorize]
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         try
         {
